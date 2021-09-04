@@ -2,18 +2,27 @@ import { browser } from 'webextension-polyfill-ts'
 
 start()
 
-async function start() {
-  console.log(browser.alarms)
+function start() {
+  const { href: url } = getApiUrl()
   browser.alarms.create({ periodInMinutes: 1 / 12 })
-  browser.alarms.onAlarm.addListener(update)
+  browser.alarms.onAlarm.addListener(() => update(url))
   console.info('[Ethereum Gas Tracker] Started!')
 }
 
-async function update() {
+function getApiUrl(): URL {
+  const token = (import.meta.env.VITE_ETHERSCAN_API_KEY_TOKEN || '') as string
+  const apiUrl = new URL('https://api.etherscan.io/api')
+  apiUrl.searchParams.set('module', 'gastracker')
+  apiUrl.searchParams.set('action', 'gasoracle')
+  apiUrl.searchParams.set('apikey', token)
+  return apiUrl
+}
+
+async function update(url: string) {
   try {
     const {
       result: { ProposeGasPrice }
-    } = await getGasData()
+    } = await getGasData(url)
     browser.action.setBadgeText({ text: ProposeGasPrice })
     browser.action.setBadgeBackgroundColor({ color: '#18A0FB' })
   } catch (e) {
@@ -23,11 +32,7 @@ async function update() {
   }
 }
 
-async function getGasData() {
-  const res = await fetch(
-    `https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=${
-      import.meta.env.VITE_ETHERSCAN_API_KEY_TOKEN
-    }`
-  )
+async function getGasData(url: string) {
+  const res = await fetch(url)
   return await res.json()
 }
