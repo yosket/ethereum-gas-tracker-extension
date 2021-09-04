@@ -3,8 +3,9 @@ import { browser } from 'webextension-polyfill-ts'
 start()
 
 async function start() {
-  await update()
-  setInterval(update, 5000)
+  console.log(browser.alarms)
+  browser.alarms.create({ periodInMinutes: 1 / 12 })
+  browser.alarms.onAlarm.addListener(update)
   console.info('[Ethereum Gas Tracker] Started!')
 }
 
