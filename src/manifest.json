@@ -1,6 +1,6 @@
 {
   "name": "Ethereum Gas Tracker",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "manifest_version": 3,
   "icons": {
     "1024": "icon.png"
