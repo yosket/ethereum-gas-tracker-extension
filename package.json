@@ -1,6 +1,6 @@
 {
   "name": "ethereum-gas-tracker-extension",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "build": "tsc && vite build",
     "archive": "yarn build && node ./scripts/assemble.js"
